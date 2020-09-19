@@ -1,0 +1,95 @@
+{
+  "output_file": "config.json",
+
+  "donate":{
+    "type"    : "button",
+    "label"   : "â˜•  â˜•  Buy the dev a coffee  â˜•  â˜•",
+    "tooltip" : "Keep the development of free scripts going buying the developer a coffee!",
+    "function": "donate",
+    "wsevent" : "",
+    "group"   : ""
+  },
+  "contact":{
+    "type"    : "button",
+    "label"   : "Want a custom script? Contact me!",
+    "tooltip" : "Click here to contact the script's developer luissanchezdev",
+    "function": "open_contact_me",
+    "wsevent" : "",
+    "group"   : ""
+  },
+  "emotes":{
+    "type"    : "button",
+    "label"   : "ðŸŽ¨ Twitch emotes, sub badges, channel points image and logos\nby Tecno_Diana",
+    "tooltip" : "Click here to contact Tecno_Diana for Twitch emotes!",
+    "function": "open_contact_td",
+    "wsevent" : "",
+    "group"   : ""
+  },
+  "open_readme": {
+    "type": "button",
+    "label": "📰 Open the README",
+    "tooltip": "Click here to open the readme for instructions.",
+    "function": "open_readme",
+    "wsevent": "",
+    "group": ""
+  },
+  "command": {
+    "type": "textbox",
+    "value": "!timer",
+    "label": "Command: Start a new timer",
+    "tooltip": "Command to start a new timer",
+    "group": "General"
+  },
+  "permission": {
+    "type": "dropdown",
+    "value": "Moderator",
+    "items": ["Everyone","Regular","Subscriber","Moderator","Editor"],
+    "label": "Permission level",
+    "tooltip": "Set the permission level for the command",
+    "group": "General"
+  },
+  "min_duration": {
+    "type": "numberbox",
+    "label": "Minimum timer duration (seconds)",
+    "value": 10,
+    "tooltip": "Prevent timers under this duration in seconds",
+    "group": "General"
+  },
+  "text_color": {
+    "type": "colorpicker",
+    "label": "Default text color",
+    "value": "rgba(255,255,255,1.0)",
+    "tooltip": "Color for the timer reason on the overlay",
+    "group": "Overlay"
+  },
+  "foreground_color": {
+    "type": "colorpicker",
+    "label": "Default foreground bar color",
+    "value": "rgba(150,20,20,1.0)",
+    "tooltip": "Change the color for the filling bar in the overlay",
+    "group": "Overlay"
+  },
+  "background_color": {
+    "type": "colorpicker",
+    "label": "Default background bar color",
+    "value": "rgba(255,180,180,1.0)",
+    "tooltip": "Overlay",
+    "group": ""
+  },
+  "pick_starting_sound": {
+    "type": "button",
+    "label": "Pick Timer start SFX",
+    "tooltip": "Click here to select your own sound when the timer starts",
+    "function": "pick_starting_sound",
+    "wsevent": "",
+    "group": "Sound Effects"
+  },
+  "pick_ending_sound": {
+    "type": "button",
+    "label": "Pick Timer end SFX",
+    "tooltip": "Click here to select your own sound when the timer ends",
+    "function": "pick_ending_sound",
+    "wsevent": "",
+    "group": "Sound Effects"
+  }
+}

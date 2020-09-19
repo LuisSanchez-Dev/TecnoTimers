@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tecno Timers</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <script src="API_Key.js"></script>
+  <style>
+    .progress {
+      width: 100%;
+      position: absolute;
+      left: 0;
+      top: 1080px;
+      transition: top 0.75s ease-in-out;
+    }
+  </style>
+</head>
+<body style="background: #000000;">
+  
+
+  <script>
+    var timers = [];
+    var window_height = window.innerHeight;
+    function play_start_sound() {
+      let audio = document.createElement("audio");
+      audio.src = "sound_start.mp3";
+      audio.play()
+    }
+    function play_end_sound() {
+      let audio = document.createElement("audio");
+      audio.src = "sound_end.mp3";
+      audio.play()
+    }
+    function createNewTimer(timer) {
+      let progress_div = document.createElement("div");
+      progress_div.className = "progress";
+      let progress_bar_div = document.createElement("div");
+      progress_bar_div.className = "progress-bar";
+      progress_bar_div.setAttribute("role", "progressbar");
+      progress_bar_div.setAttribute("aria-valuenow", "0");
+      progress_bar_div.setAttribute("aria-valuemin", "0");
+      progress_bar_div.setAttribute("aria-valuemax", "100");
+      progress_bar_div.textContent = timer.reason;
+      progress_bar_div.style.width = "0%";
+      progress_bar_div.style.transition = "width " + timer.duration + "s";
+      progress_bar_div.style.background = timer.foreground_color;
+      progress_bar_div.style.color = timer.text_color;
+      progress_div.style.background = timer.background_color;
+      play_start_sound();
+      setTimeout(() => {
+        let timer_info = {
+          timer: timer,
+          node: progress_div
+        };
+        timers.push(timer_info);
+        sortTimers();
+        progress_bar_div.style.width = "100%";
+        
+        setTimeout(() => {
+          // progress_bar_div.textContent = "Done!";
+          play_end_sound();
+          setTimeout(() => {
+            setTimeout(() => {
+              progress_div.style.top = window_height + "px";
+              timers.splice(timers.indexOf(timer_info), 1);
+              sortTimers()
+              setTimeout(() => {
+                progress_div.parentNode.removeChild(progress_div); 
+              }, 500);
+            }, 500)
+          }, 500)
+        }, timer.duration * 1000);
+      }, 50)
+      
+      progress_div.appendChild(progress_bar_div);
+      document.body.appendChild(progress_div);
+      
+      // sortTimers()
+    }
+
+    function sortTimers() {
+      let current_time = (new Date).getTime() / 1000;
+      // console.log(timers)
+      timers = timers.sort((a, b) => {
+        // 30 - (1000 - 900)
+        let a_value = a.timer.duration - (current_time - a.timer.start);
+        let b_value = b.timer.duration - (current_time - b.timer.start);
+        if (a.timer.reason == "C" || b.timer.reason == "C") {
+          console.log(a.timer.reason, a_value)
+          console.log(b.timer.reason, b_value)
+        }
+        return a_value - b_value;
+      });
+      
+      let bar_height = 25;
+      let offset = window_height - timers.length * bar_height;
+      offset = offset < 0 ? 0 : offset;
+      timers.forEach((t, i) => {
+        t.node.style.top = (offset + i*25)+"px";
+      })
+    }
+    // setInterval(sortTimers, 1000)
+    let test_interval;
+    function test() {
+      let c = v => Math.floor(v + Math.random() * v)
+      let random_color = () => `#${c(25)}${c(25)}${c(25)}`;
+      let random_color_bright = () => 
+      console.log("Starting timer")
+      test_interval = setTimeout(() => {
+        createNewTimer({
+          start: (new Date()).getTime() / 1000,
+          duration: 10 + 45 * Math.random(),
+          reason: Math.floor(Math.random()* 999999999),
+          foreground_color: random_color(),
+          background_color: random_color_bright()
+        });
+      }, 2000 + 3000 * Math.random())
+    }
+    function stopTest() {
+      clearInterval(test_interval)
+    }
+    var socket;
+    function connect(){
+      socket = new WebSocket(API_Socket);
+      socket.onopen = function() {
+        var auth = {
+          author: "LuisSanchezDev",
+          website: "https://www.fiverr.com/luissanchezdev",
+          api_key: API_Key,
+          events: ["EVENT_NEW_TIMER", "EVENT_FORCE_RELOAD"]
+        }
+        socket.send(JSON.stringify(auth));
+      };
+
+      socket.onmessage = function (message) {
+        let msg_received = JSON.parse(message.data);
+        if (msg_received.event == "EVENT_NEW_TIMER") {
+          let data = JSON.parse(msg_received.data);
+          createNewTimer(data);
+          console.log("Added new timer!!")
+        } else if (msg_received.event == "EVENT_FORCE_RELOAD") {
+          location.reload();
+        } else {
+          console.log(msg_received)
+        }
+      }
+      socket.onclose = function () {
+        console.log("Conection closed, reconnecting...")
+        setTimeout(connect, 500)
+      } 
+    }
+    connect()
+  
+
+  </script>
+</body>
+</html>
